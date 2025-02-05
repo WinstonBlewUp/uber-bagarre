@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Uber Bagarre{% endblock %}
+
+{% block body %}
+    <div class="text-center">
+        <h1 class="text-4xl text-red-600">Bienvenue sur Uber Bagarre</h1>
+        <p class="text-lg mt-2">Le premier service de mise en relation pour la bagarre.</p>
+        <button class="btn btn-primary mt-4">Trouver un adversaire</button>
+    </div>
+
+    {% if app.user %}
+        <a href="{{ path('app_logout') }}" class="btn btn-secondary">Déconnexion</a>
+    {% endif %}
+{% endblock %}
