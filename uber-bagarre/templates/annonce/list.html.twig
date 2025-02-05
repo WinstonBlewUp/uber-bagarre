@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les Bagarres{% endblock %}
+
+{% block body %}
+    <div class="max-w-4xl mx-auto mt-10">
+        <h1 class="text-3xl font-bold mb-6">Les dernières bagarres</h1>
+
+        {% for annonce in annonces %}
+            <div class="mb-6 p-4 bg-white rounded-lg shadow-md">
+                <h2 class="text-xl font-bold">{{ annonce.title }}</h2>
+                <p class="text-gray-700">{{ annonce.description }}</p>
+                <p class="text-sm text-gray-500">Publié par {{ annonce.createdBy.email }} le {{ annonce.date|date('d/m/Y H:i') }}</p>
+                {% if annonce.reward %}
+                    <p class="font-bold text-green-600"> Récompense : {{ annonce.reward }}€</p>
+                {% endif %}
+                <a href="{{ path('annonce_join', {'id': annonce.id}) }}" class="btn btn-primary">🤜 Rejoindre</a>
+            </div>
+        {% else %}
+            <p class="text-center text-gray-600">Aucune bagarre disponible pour l’instant. </p>
+        {% endfor %}
+    </div>
+{% endblock %}
