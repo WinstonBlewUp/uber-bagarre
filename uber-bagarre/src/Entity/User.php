@@ -39,6 +39,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $isVerified = false;
 
+    #[ORM\Column(length: 50, unique: true)]
+    private ?string $username = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $weight = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $height = null;
+
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    private int $score = 0;
+
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    private int $victories = 0;
+
     /**
      * @var Collection<int, Annonce>
      */
@@ -55,6 +73,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): static
+    {
+        $this->username = $username;
+        return $this;
+    }
+
     public function getEmail(): ?string
     {
         return $this->email;
@@ -64,6 +93,50 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->email = $email;
 
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function getWeight(): ?int
+    {
+        return $this->weight;
+    }
+
+    public function setWeight(?int $weight): static
+    {
+        $this->weight = $weight;
+        return $this;
+    }
+
+    public function getHeight(): ?int
+    {
+        return $this->height;
+    }
+
+    public function setHeight(?int $height): static
+    {
+        $this->height = $height;
+        return $this;
+    }
+
+    public function getScore(): int
+    {
+        return $this->score;
+    }
+
+    public function setScore(int $score): static
+    {
+        $this->score = $score;
         return $this;
     }
 
@@ -152,6 +225,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $annonce->setCreatedBy($this);
         }
 
+        return $this;
+    }
+
+    public function getVictories(): int
+    {
+        return $this->victories;
+    }
+
+    public function setVictories(int $victories): static
+    {
+        $this->victories = $victories;
+        $this->score = $victories * 10;
         return $this;
     }
 

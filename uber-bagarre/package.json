@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx tailwindcss -i ./assets/styles/app.css -o ./public/build/tailwind.css --minify",
+    "watch": "npx tailwindcss -i ./assets/styles/app.css -o ./public/build/tailwind.css --watch"
   },
   "keywords": [],
   "author": "",
@@ -11,7 +13,9 @@
   "description": "",
   "dependencies": {
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.5.1",
+    "postcss": "^8.5.1"
+  },
+  "devDependencies": {
     "tailwindcss": "^3.4.17"
   }
 }
