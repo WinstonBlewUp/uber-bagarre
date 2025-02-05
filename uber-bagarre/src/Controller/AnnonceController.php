@@ -39,7 +39,7 @@ class AnnonceController extends AbstractController
     public function userAnnonces(EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-        $mesAnnonces = $entityManager->getRepository(Annonce::class)->findBy(['createdBy' => $user], ['date' => 'DESC']);
+        $annonces = $entityManager->getRepository(Annonce::class)->findBy(['createdBy' => $user], ['date' => 'DESC']);
 
         $annoncesAcceptees = [];
         if (in_array('ROLE_BAGARREUR', $user->getRoles()) || in_array('ROLE_ADMIN', $user->getRoles())) {
@@ -53,7 +53,7 @@ class AnnonceController extends AbstractController
         }
 
         return $this->render('annonce/mine.html.twig', [
-            'mesAnnonces' => $mesAnnonces,
+            'annonces' => $annonces,
             'annoncesAcceptees' => $annoncesAcceptees,
         ]);
     }
@@ -62,16 +62,14 @@ class AnnonceController extends AbstractController
     #[Route('/edit/{id}', name: 'edit')]
     public function editAnnonce(Request $request, EntityManagerInterface $entityManager, Annonce $annonce): Response
     {
-        if ($annonce->getCreatedBy() !== $this->getUser()) {
-            throw $this->createAccessDeniedException("Vous ne pouvez modifier que vos annonces.");
-        }
+        $this->denyAccessUnlessGranted('annonce_edit', $annonce);
 
         $form = $this->createForm(AnnonceFormType::class, $annonce);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-            return $this->redirectToRoute('mes_annonces');
+            return $this->redirectToRoute('annonce_mes_annonces');
         }
 
         return $this->render('annonce/edit.html.twig', [
@@ -79,18 +77,18 @@ class AnnonceController extends AbstractController
         ]);
     }
 
+
     #[Route('/delete/{id}', name: 'delete', methods: ['POST'])]
     public function deleteAnnonce(EntityManagerInterface $entityManager, Annonce $annonce): Response
     {
-        if ($annonce->getCreatedBy() !== $this->getUser()) {
-            throw $this->createAccessDeniedException("Vous ne pouvez supprimer que vos annonces.");
-        }
+        $this->denyAccessUnlessGranted('annonce_delete', $annonce);
 
         $entityManager->remove($annonce);
         $entityManager->flush();
 
-        return $this->redirectToRoute('mes_annonces');
+        return $this->redirectToRoute('annonce_mes_annonces');
     }
+
 
     #[Route('/join/{id}', name: 'join')]
     public function joinAnnonce(Annonce $annonce, EntityManagerInterface $entityManager): Response
@@ -115,18 +113,23 @@ class AnnonceController extends AbstractController
         $annonce = $entityManager->getRepository(Annonce::class)->find($annonceId);
         $user = $entityManager->getRepository(User::class)->find($userId);
 
-        if (!$annonce || !$user || $annonce->getCreatedBy() !== $this->getUser()) {
-            throw $this->createAccessDeniedException("Action non autorisée.");
+        if (!$annonce || !$user) {
+            throw $this->createNotFoundException();
         }
 
-        if (!$annonce->getParticipants()->contains($user)) {
+        $this->denyAccessUnlessGranted('annonce_validate', $annonce);
+
+        if ($annonce->getParticipants()->contains($user)) {
+            $annonce->removeParticipant($user);
+        } else {
             $annonce->addParticipant($user);
-            $entityManager->persist($annonce);
-            $entityManager->flush();
         }
+
+        $entityManager->flush();
 
         return $this->redirectToRoute('annonce_mes_annonces');
     }
+
 
 
     #[Route('/bagarres', name: 'list')]

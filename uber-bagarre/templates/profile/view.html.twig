@@ -3,24 +3,28 @@
 {% block title %}Profil de {{ user.username }}{% endblock %}
 
 {% block body %}
-<div class="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-    <h1 class="text-2xl font-bold mb-4">Profil de {{ user.username }}</h1>
+    <div class="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+        <h1 class="text-3xl font-bold mb-4">{{ user.username }}</h1>
+        <p class="text-gray-700">{{ user.description }}</p>
+        <p class="text-gray-600">Poids : {{ user.weight }} kg | Taille : {{ user.height }} cm</p>
+        <p class="font-bold text-blue-500">Score : {{ user.score }}</p>
 
-    <p><strong>Email :</strong> {{ user.email }}</p>
-    <p><strong>Description :</strong> {{ user.description ?: 'Non renseignée' }}</p>
-    <p><strong>Poids :</strong> {{ user.weight ?: 'Non renseigné' }} kg</p>
-    <p><strong>Taille :</strong> {{ user.height ?: 'Non renseignée' }} cm</p>
-    <p><strong>Score :</strong> {{ user.score }}</p>
-    <p><strong>Victoires :</strong> {{ user.victories }}</p>
+        {% if app.user and app.user.id == user.id %}
+            <a href="{{ path('profile_edit') }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mt-4">
+                Modifier mon profil
+            </a>
+        {% endif %}
 
-    {% if app.user and app.user.id == user.id %}
-        <a href="{{ path('profile_edit') }}" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded">
-            Modifier mon profil
-        </a>
-    {% endif %}
-</div>
+        <hr class="my-6">
 
-{% if app.user and app.user.id == user.id %}
-    {% include 'annonce/mine.html.twig' %}
-{% endif %}
+        {% if app.user and app.user.id == user.id %}
+            <a href="{{ path('annonce_new') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                + Ajouter une annonce
+            </a>
+        {% endif %}
+
+        <h2 class="text-2xl font-bold mt-6">Mes Annonces</h2>
+        {% include 'annonce/mine.html.twig' %}
+
+    </div>
 {% endblock %}
