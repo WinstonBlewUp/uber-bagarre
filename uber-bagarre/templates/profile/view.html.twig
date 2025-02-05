@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil de {{ user.username }}{% endblock %}
+
+{% block body %}
+<div class="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+    <h1 class="text-2xl font-bold mb-4">Profil de {{ user.username }}</h1>
+
+    <p><strong>Email :</strong> {{ user.email }}</p>
+    <p><strong>Description :</strong> {{ user.description ?: 'Non renseignée' }}</p>
+    <p><strong>Poids :</strong> {{ user.weight ?: 'Non renseigné' }} kg</p>
+    <p><strong>Taille :</strong> {{ user.height ?: 'Non renseignée' }} cm</p>
+    <p><strong>Score :</strong> {{ user.score }}</p>
+    <p><strong>Victoires :</strong> {{ user.victories }}</p>
+
+    {% if app.user and app.user.id == user.id %}
+        <a href="{{ path('profile_edit') }}" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded">
+            Modifier mon profil
+        </a>
+    {% endif %}
+</div>
+
+{% if app.user and app.user.id == user.id %}
+    {% include 'annonce/mine.html.twig' %}
+{% endif %}
+{% endblock %}

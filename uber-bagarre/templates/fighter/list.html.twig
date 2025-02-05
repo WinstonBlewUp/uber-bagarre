@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Classement des Bagarreurs{% endblock %}
+
+{% block body %}
+<div class="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+    <h1 class="text-3xl font-bold mb-6 text-center">Classement des Bagarreurs</h1>
+
+    <table class="w-full text-left border-collapse">
+        <thead>
+            <tr>
+                <th class="p-3 border-b-2">Pseudo</th>
+                <th class="p-3 border-b-2">Victoires</th>
+                <th class="p-3 border-b-2">Score</th>
+                <th class="p-3 border-b-2">Poids</th>
+                <th class="p-3 border-b-2">Taille</th>
+                <th class="p-3 border-b-2">Profil</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fighter in fighters %}
+                <tr>
+                    <td class="p-3 border-b">{{ fighter.username }}</td>
+                    <td class="p-3 border-b text-center">{{ fighter.victories }}</td>
+                    <td class="p-3 border-b text-center font-bold">{{ fighter.score }}</td>
+                    <td class="p-3 border-b text-center">{{ fighter.weight }} kg</td>
+                    <td class="p-3 border-b text-center">{{ fighter.height }} cm</td>
+                    <td class="p-3 border-b text-center">
+                        <a href="{{ path('profile_view', {'id': fighter.id}) }}" class="text-blue-500">Voir</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="p-3 border-b text-center">Aucun bagarreur trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
