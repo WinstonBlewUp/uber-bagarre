@@ -16,6 +16,17 @@ class AnnonceRepository extends ServiceEntityRepository
         parent::__construct($registry, Annonce::class);
     }
 
+    public function findOneWithCreator(int $id): ?Annonce
+    {
+        return $this->createQueryBuilder('a')
+            ->leftJoin('a.createdBy', 'u')
+            ->addSelect('u')
+            ->where('a.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     //    /**
     //     * @return Annonce[] Returns an array of Annonce objects
     //     */
