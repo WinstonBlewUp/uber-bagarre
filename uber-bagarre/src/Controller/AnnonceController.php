@@ -39,7 +39,7 @@ class AnnonceController extends AbstractController
     public function userAnnonces(EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-        $mesAnnonces = $entityManager->getRepository(Annonce::class)->findBy(['createdBy' => $user], ['date' => 'DESC']);
+        $annonces = $entityManager->getRepository(Annonce::class)->findBy(['createdBy' => $user], ['date' => 'DESC']);
 
         $annoncesAcceptees = [];
         if (in_array('ROLE_BAGARREUR', $user->getRoles()) || in_array('ROLE_ADMIN', $user->getRoles())) {
@@ -53,7 +53,7 @@ class AnnonceController extends AbstractController
         }
 
         return $this->render('annonce/mine.html.twig', [
-            'mesAnnonces' => $mesAnnonces,
+            'annonces' => $annonces,
             'annoncesAcceptees' => $annoncesAcceptees,
         ]);
     }

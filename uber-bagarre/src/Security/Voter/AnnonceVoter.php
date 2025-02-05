@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Security;
+namespace App\Security\Voter;
 
 use App\Entity\Annonce;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -32,6 +32,7 @@ class AnnonceVoter extends Voter
         $user = $token->getUser();
 
         if (!$user instanceof UserInterface) {
+            dump("Utilisateur non authentifié");
             return false;
         }
 
@@ -39,7 +40,7 @@ class AnnonceVoter extends Voter
         $annonce = $subject;
 
         return match ($attribute) {
-            self::EDIT, self::DELETE, self::VALIDATE_PARTICIPATION => $user === $annonce->getCreatedBy(),
+            self::EDIT, self::DELETE, self::VALIDATE_PARTICIPATION => $user->getId() === $annonce->getCreatedBy()->getId(),
             default => false,
         };
     }
