@@ -6,10 +6,12 @@
     <div class="text-center">
         <h1 class="text-4xl text-red-600">Bienvenue sur Uber Bagarre</h1>
         <p class="text-lg mt-2">Le premier service de mise en relation pour la bagarre.</p>
-        <button class="btn btn-primary mt-4">Trouver un adversaire</button>
+        <a href="{{ path('annonce_list') }}" class="btn btn-secondary">🔎 Voir les bagarres</a>
     </div>
 
     {% if app.user %}
+        <a href="{{ path('annonce_new') }}" class="btn btn-primary">Nouvelle annonce</a>
+        <a href="{{ path('annonce_mes_annonces') }}" class="btn btn-primary">Mes annonce</a>
         <a href="{{ path('app_logout') }}" class="btn btn-secondary">Déconnexion</a>
     {% endif %}
 {% endblock %}

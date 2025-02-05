@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Annonces{% endblock %}
+
+{% block body %}
+    <div class="max-w-4xl mx-auto mt-10">
+        <h1 class="text-3xl font-bold mb-6">Mes Annonces</h1>
+
+        {% for annonce in mesAnnonces %}
+            <div class="mb-6 p-4 bg-white rounded-lg shadow-md">
+                <h2 class="text-xl font-bold">{{ annonce.title }}</h2>
+                <p class="text-gray-700">{{ annonce.description }}</p>
+                <p class="text-sm text-gray-500">Publié le {{ annonce.date|date('d/m/Y H:i') }}</p>
+                {% if annonce.reward %}
+                    <p class="font-bold text-green-600">Récompense : {{ annonce.reward }}€</p>
+                {% endif %}
+                
+                <a href="{{ path('annonce_edit', {'id': annonce.id}) }}" class="btn btn-warning">Modifier</a>
+                <a href="{{ path('annonce_delete', {'id': annonce.id}) }}" class="btn btn-danger" onclick="return confirm('Confirmer la suppression ?')">Supprimer</a>
+
+                {% if annonce.participants|length > 0 %}
+                    <h3 class="text-lg font-bold mt-4">Demandes en attente</h3>
+                    {% for participant in annonce.participants %}
+                        <div class="flex justify-between items-center p-2 bg-gray-100 rounded mt-2">
+                            <p>{{ participant.email }}</p>
+                            <a href="{{ path('annonce_validate', {'annonceId': annonce.id, 'userId': participant.id}) }}" class="btn btn-success">
+                                Accepter
+                            </a>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% else %}
+            <p class="text-center text-gray-600">Aucune annonce publiée.</p>
+        {% endfor %}
+
+        {% if annoncesAcceptees is not empty %}
+            <h2 class="text-2xl font-bold mt-10">Annonces acceptées</h2>
+            {% for annonce in annoncesAcceptees %}
+                <div class="mb-6 p-4 bg-white rounded-lg shadow-md">
+                    <h2 class="text-xl font-bold">{{ annonce.title }}</h2>
+                    <p class="text-gray-700">{{ annonce.description }}</p>
+                    <p class="text-sm text-gray-500">Créé par {{ annonce.createdBy.email }} le {{ annonce.date|date('d/m/Y H:i') }}</p>
+                    {% if annonce.reward %}
+                        <p class="font-bold text-green-600">Récompense : {{ annonce.reward }}€</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
