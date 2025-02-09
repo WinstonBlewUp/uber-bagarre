@@ -1,0 +1,26 @@
+<div id="map" class="rounded-md border border-gray-300"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var map = L.map('map').setView([48.8566, 2.3522], 5);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        let markers = {{ markers|json_encode|raw }};
+
+        markers.forEach(marker => {
+            L.marker([marker.lat, marker.lng])
+                .addTo(map)
+                .bindPopup("<b>" + marker.name + "</b><br>" + marker.description);
+        });
+    });
+</script>
+
+<style>
+    #map{
+        height : 80vh;
+        width : 85%;
+    }
+</style>

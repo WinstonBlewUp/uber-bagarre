@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Publier une annonce{% endblock %}
+
+{% block body %}
+    <div class="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold mb-4">Publier une annonce</h1>
+        {{ form_start(annonceForm) }}
+        <div class="mb-4">
+            {{ form_label(annonceForm.title) }}
+            {{ form_widget(annonceForm.title, { 'attr': {'class': 'w-full border p-2 rounded'} }) }}
+        </div>
+        <div class="mb-4">
+            {{ form_label(annonceForm.description) }}
+            {{ form_widget(annonceForm.description, { 'attr': {'class': 'w-full border p-2 rounded'} }) }}
+        </div>
+        <div class="mb-4">
+            {{ form_label(annonceForm.reward) }}
+            {{ form_widget(annonceForm.reward, { 'attr': {'class': 'w-full border p-2 rounded'} }) }}
+        </div>
+        <button type="submit" class="btn btn-primary">Publier</button>
+        {{ form_end(annonceForm) }}
+    </div>
+{% endblock %}
