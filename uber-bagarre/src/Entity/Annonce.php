@@ -28,6 +28,13 @@ class Annonce
     #[ORM\Column(nullable: true)]
     private ?int $reward = null;
 
+    #[ORM\Column(type: 'decimal', precision: 9, scale: 6, nullable: true)]
+    private ?float $latitude = null;
+
+    #[ORM\Column(type: 'decimal', precision: 9, scale: 6, nullable: true)]
+    private ?float $longitude = null;
+
+
     #[ORM\ManyToOne(inversedBy: 'annonces')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $createdBy = null;
@@ -125,4 +132,27 @@ class Annonce
 
         return $this;
     }
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?float $latitude): self
+    {
+        $this->latitude = $latitude;
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): self
+    {
+        $this->longitude = $longitude;
+        return $this;
+    }
+
 }

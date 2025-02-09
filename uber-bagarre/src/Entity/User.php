@@ -57,6 +57,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer', options: ['default' => 0])]
     private int $victories = 0;
 
+    #[ORM\Column(type: 'decimal', precision: 9, scale: 6, nullable: true)]
+    private ?float $latitude = null;
+
+    #[ORM\Column(type: 'decimal', precision: 9, scale: 6, nullable: true)]
+    private ?float $longitude = null;
+
+
     /**
      * @var Collection<int, Annonce>
      */
@@ -251,4 +258,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?float $latitude): self
+    {
+        $this->latitude = $latitude;
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): self
+    {
+        $this->longitude = $longitude;
+        return $this;
+    }
+
 }

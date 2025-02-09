@@ -16,14 +16,21 @@ class HomeController extends AbstractController
     public function index(EntityManagerInterface $entityManager): Response
     {
         $annonces = $entityManager->getRepository(Annonce::class)->findBy([], ['date' => 'DESC'], 3);
-        $fighters = $entityManager->getConnection()->fetchAllAssociative("
-            SELECT * FROM \"user\" WHERE roles::jsonb @> '[\"ROLE_BAGARREUR\"]'::jsonb ORDER BY score DESC LIMIT 3
-        ");
+        $fighters = $entityManager->getRepository(User::class)->findTopFighters();
 
+        $annoncesProches = [];
+        if ($this->getUser()) {
+            $user = $this->getUser();
+            if ($user->getLatitude() !== null && $user->getLongitude() !== null) {
+                $annoncesProches = $entityManager->getRepository(Annonce::class)
+                    ->findNearbyAnnonces($user->getLatitude(), $user->getLongitude(), 10);
+            }
+        }
 
         return $this->render('home.html.twig', [
             'annonces' => $annonces,
             'fighters' => $fighters,
+            'annoncesProches' => $annoncesProches,
         ]);
     }
 }

@@ -5,10 +5,8 @@ namespace App\Repository;
 use App\Entity\Annonce;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\DBAL\Connection;
 
-/**
- * @extends ServiceEntityRepository<Annonce>
- */
 class AnnonceRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -27,28 +25,46 @@ class AnnonceRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    //    /**
-    //     * @return Annonce[] Returns an array of Annonce objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findNearbyAnnonces(float $latitude, float $longitude, float $radiusKm = 10): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
 
-    //    public function findOneBySomeField($value): ?Annonce
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $sql = "
+            SELECT * FROM annonce
+            WHERE ST_DWithin(
+                ST_SetSRID(ST_MakePoint(longitude, latitude), 4326),
+                ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326),
+                :radius
+            )
+        ";
+
+        $stmt = $conn->prepare($sql);
+        $result = $stmt->executeQuery([
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'radius' => $radiusKm * 1000,
+        ]);
+
+        return $result->fetchAllAssociative();
+    }
+
+
+    public function findRecentAnnonces(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('a')
+            ->orderBy('a.date', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAnnoncesByUser(int $userId): array
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.createdBy = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('a.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
