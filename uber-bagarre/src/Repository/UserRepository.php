@@ -33,6 +33,24 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    public function findTopFighters(int $limit = 3): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        
+        $sql = "SELECT * FROM \"user\" WHERE roles::jsonb @> :role ORDER BY score DESC LIMIT :limit";
+
+        $stmt = $conn->prepare($sql);
+        $result = $stmt->executeQuery([
+            'role' => json_encode(["ROLE_BAGARREUR"]),
+            'limit' => $limit
+        ]);
+
+        return $result->fetchAllAssociative();
+    }
+
+
+
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

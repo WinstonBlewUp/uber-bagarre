@@ -6,6 +6,8 @@
         <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{{ asset('build/tailwind.css') }}">
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
         {% endblock %}
@@ -22,12 +24,20 @@
                 <a href="{{ path('fighters_list') }}" class="hover:text-gray-400 transition">Bagarreurs</a>
             </div>
 
-            <a href="{{ path('profile_view') }}" class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                </svg>
-            </a>
+            <div class="flex space-x-4 items-center">
+                {% if app.user %}
+                    <a href="{{ path('profile_view', {'id': app.user.id}) }}" class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-primary">Se connecter</a>
+                    <a href="{{ path('app_register') }}" class="bg-white text-black rounded-full px-4 py-2">S'inscrire</a>
+                {% endif %}
+            </div>
+
         </nav>
 
         {% block body %}{% endblock %}

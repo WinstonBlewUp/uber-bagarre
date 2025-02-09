@@ -22,11 +22,20 @@ class AnnonceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($annonce->getCity()) {
+                $geoData = $geoService->getCoordinates($annonce->getCity());
+                if ($geoData) {
+                    $annonce->setLatitude($geoData['lat']);
+                    $annonce->setLongitude($geoData['lng']);
+                }
+            }
+    
             $annonce->setCreatedBy($this->getUser());
             $annonce->setDate(new \DateTimeImmutable('now'));
+    
             $entityManager->persist($annonce);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('home');
         }
 
